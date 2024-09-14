@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css.css">
+    <title>Exibir Dados JSON</title>
+</head>
+
+<body>
+
+    <h2>Dados dos Uploads</h2>
+    <div id="dados">
+        <div>
+            <img src="./images/212800.png" alt="imagem">
+            <p>Instagram</p>
+            <p>Descição: Crie e compartilhe fotos, histórias e vídeos com amigos que você ama</p>
+        </div>
+        <div>
+            <img src="./images/212709.png" alt="imagem">
+            <p>Twitter</p>
+            <p>Descição: O aplicativo X é a rede digital confiável para todos</p>
+        </div>
+        <div>
+            <img src="./images/214129.png" alt="imagem">
+            <p>Facebook</p>
+            <p>Descição: Lorem Ipsum</p>
+        </div>
+
+        <script>
+            // Função para carregar e exibir dados
+            function carregarDados() {
+                fetch('consulta.php') // URL do seu script PHP
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json(); // Converter resposta para JSON
+                    })
+                    .then(data => {
+                        const container = document.getElementById('dados');
+                        if (data.length > 0) {                           
+                            container.innerHTML = '<ul>' +
+                                data.map(item => `
+                                <div class="card">
+                                     <img src="${item.caminho}" alt="imagem do Facebook">
+                                     <p>${item.titulo}</p>
+                                     <p>${item.descricao}</p>
+                                </div>
+                            `).join('') +
+                                '</ul>';
+                        } else {
+                            container.innerHTML = '<p>Nenhum dado encontrado.</p>';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao carregar os dados:', error);
+                    });
+            }
+
+            // Carregar dados quando a página for carregada
+            window.onload = carregarDados;
+        </script>
+
+</body>
+
+</html>
