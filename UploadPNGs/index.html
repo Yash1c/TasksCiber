@@ -1,0 +1,102 @@
+<html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uploader Criativo</title>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+    .upload-container {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    .file-input {
+        display: none;
+    }
+    .file-label {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    .file-label:hover {
+        background-color: #45a049;
+    }
+    .file-name {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        color: #666;
+    }
+    .submit-btn {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #008CBA;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    .submit-btn:hover {
+        background-color: #007B9A;
+    }
+    .submit-btn:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }
+</style>
+</head>
+<body>
+    <div class="upload-container">
+        <input type="file" id="fileInput" class="file-input" accept=".png">
+        <label for="fileInput" class="file-label">Escolher Imagem PNG</label>
+        <div id="fileName" class="file-name"></div>
+        <button onclick="enviar()" id="submitBtn" class="submit-btn" disabled>Enviar Imagem</button>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const fileName = document.getElementById('fileName');
+        const submitBtn = document.getElementById('submitBtn');
+
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                fileName.textContent = this.files[0].name;
+                submitBtn.disabled = false;
+            } else {
+                fileName.textContent = '';
+                submitBtn.disabled = true;
+            }
+        });
+
+        function enviar() {
+            const formData = new FormData();
+            var arq = fileInput.files[0];
+            formData.append("arquivo", arq);
+
+            fetch("http://localhost/server.php", { method: "POST", body: formData })
+                .then(response => response.text())
+                .then(text => {
+                    console.log(text);
+                    alert("Upload realizado com sucesso!");
+                })
+                .catch(error => {
+                    console.log("Erro ao realizar upload");
+                    alert("Erro ao realizar upload. Por favor, tente novamente.");
+                });
+        }
+    </script>
+</body>
+</html>
