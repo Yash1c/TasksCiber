@@ -1,0 +1,116 @@
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Calculadora de IMC</title><style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+    .container {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        max-width: 400px;
+        width: 100%;
+    }
+    h1 {
+        color: #3498db;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+    label {
+        margin-bottom: 0.5rem;
+        color: #34495e;
+    }
+    input {
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+        border: 1px solid #bdc3c7;
+        border-radius: 5px;
+        font-size: 1rem;
+    }
+    button {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 0.75rem;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    button:hover {
+        background-color: #2980b9;
+    }
+    #resultado {
+        font-weight: bold;
+        color: #2ecc71;
+    }
+    .result-container {
+        margin-top: 1rem;
+        text-align: center;
+        font-size: 1.1rem;
+    }
+</style></head>
+<body>
+    <div class="container">
+        <h1>Calculadora de IMC</h1>
+        <form id="imcForm">
+            <label for="peso">Peso (kg):</label>
+            <input type="number" id="peso" step="0.1" required>
+            <label for="altura">Altura (m):</label>
+            <input type="number" id="altura" step="0.01" required>
+            <button type="button" onclick="calcularIMC()">Calcular IMC</button>
+        </form>
+        <div class="result-container">
+            <p>Seu IMC é: <span id="resultado">-</span></p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="imc.js"></script>
+    <script>
+        function calcularIMC() {
+            const peso = parseFloat(document.getElementById("peso").value);
+            const altura = parseFloat(document.getElementById("altura").value);
+
+            if (isNaN(peso) || isNaN(altura) || peso <= 0 || altura <= 0) {
+                alert("Por favor, insira valores válidos para peso e altura.");
+                return;
+            }
+
+            const imc = Module.ccall('calcular_imc', 'number', ['number', 'number'], [peso, altura]);
+
+            const resultElement = document.getElementById("resultado");
+            gsap.to(resultElement, {
+                textContent: imc.toFixed(2),
+                duration: 1,
+                ease: "power2.out",
+                snap: { textContent: 0.1 },
+                onUpdate: function() {
+                    resultElement.textContent = parseFloat(resultElement.textContent).toFixed(2);
+                }
+            });
+
+
+            gsap.fromTo(".container", 
+                { y: 0, rotation: 0 },
+                { y: -10, rotation: 2, duration: 0.3, yoyo: true, repeat: 1 }
+            );
+        }
+
+        gsap.from(".container", {
+            opacity: 0,
+            y: 50,
+            duration: 1,
+            ease: "power3.out"
+        });
+    </script>
+</body></html>
